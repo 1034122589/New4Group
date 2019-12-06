@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itheima.health.dao.PermissionDao">
+
+    <!--使用角色id，查询角色对应权限集合-->
+    <select id="findPermissionsByRoleId" parameterType="int" resultType="permission">
+        SELECT p.* FROM t_permission p,t_role_permission rp WHERE p.id = rp.permission_id AND role_id = #{roleId}
+    </select>
+
+    <!--查询所有-->
+    <select id="findAll" resultType="permission">
+        SELECT * from t_permission
+    </select>
+
+    <!--新增权限-->
+    <insert id="add" parameterType="permission">
+        insert into t_permission(name,keyword,description) values(#{name},#{keyword},#{description})
+    </insert>
+
+    <!--分页查询-->
+    <select id="selectByCondition" parameterType="string" resultType="permission">
+        select * from t_permission
+        <if test="value != null and value.length>0">
+            where name like concat('%',#{value},'%') or keyword like concat('%',#{value},'%')
+        </if>
+    </select>
+
+    <!--根据id查询,实现数据回显-->
+    <select id="findById" resultType="permission" parameterType="int">
+        select * from t_permission where id = #{id}
+    </select>
+
+    <!--编辑保存-->
+    <update id="edit" parameterType="permission">
+        update t_permission
+        <set>
+            <if test="name != null and name.length >0">
+                name = #{name},
+            </if>
+            <if test="keyword != null and keyword.length > 0">
+                keyword = #{keyword},
+            </if>
+            <if test="description != null and description.length > 0">
+                description = #{description},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--根据id删除-->
+    <delete id="delete" parameterType="int">
+        DELETE from t_permission where id = #{id}
+    </delete>
+</mapper>
